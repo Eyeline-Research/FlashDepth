@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="FlashDepth: Real-time Streaming Video Depth Estimation at 2K Resolution">
+  <meta name="keywords" content="depth estimation, video depth estimation, real-time, high-resolution, streaming">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlashDepth: Real-time Streaming Video Depth Estimation at 2K Resolution</title>
+
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/lightning.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var carousels = bulmaCarousel.attach('#results-carousel', {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        breakpoints: [],     // Keeps it at 1 slide for all screen sizes
+        loop: true,          // This is the magic line! Set this to true.
+  
+        // Other options remain as they were or as per their defaults
+        // navigation: true,   // Arrows will now appear and function on first/last slides
+        // pagination: true,
+        // autoplay: false,
+      });
+    });
+  </script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">FlashDepth: Real-time Streaming Video Depth Estimation at 2K Resolution</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://genechou.com/">Gene Chou</a><sup>1,2</sup>,</span>
+              <span class="author-block">
+                <a href="https://www.cs.cornell.edu/~wenqixian/">Wenqi Xian</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+              <a href="https://www.guandaoyang.com">Guandao Yang</a><sup>3</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.mohsaied.com">Mohamed Abdelfattah</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cs.cornell.edu/~bharathh/">Bharath Hariharan</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cs.cornell.edu/~snavely/">Noah Snavely</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://ningyu1991.github.io">Ning Yu</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.pauldebevec.com">Paul Debevec</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Netflix Eyeline Studios,</span>
+            <span class="author-block"><sup>2</sup>Cornell University,</span>
+            <span class="author-block"><sup>3</sup>Stanford University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2504.07093"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/Eyeline-Research/FlashDepth"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero is-light is-small">
+  <!-- <div class="hero-body"> -->
+    <div class="container is-max-desktop">
+      <video poster="" id="stage" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/flashdepth_teaser.mp4"
+                type="video/mp4">
+      </video>
+
+      <h2 class="subtitle" style="font-size: 1.1rem;">
+        FlashDepth enables high-resolution, real-time video depth estimation. It captures fine details like fur, hair, and poles. 
+        We provide additional snapshots in the paper (Fig. 2,4).
+      </h2>
+
+    <!-- </div> -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            A versatile video depth estimation model should (1) be
+            accurate and consistent across frames, (2) produce high-
+            resolution depth maps, and (3) support real-time streaming.
+            We propose FlashDepth, a method that satisfies all three
+            requirements, performing depth estimation on a 2044×1148
+            streaming video at 24 FPS. We show that, with careful modifications to pretrained single-image depth models, these capabilities are enabled with relatively little data and training.
+            We evaluate our approach across multiple unseen datasets
+            against state-of-the-art depth models, and find that ours outperforms them in terms of boundary sharpness and speed
+            by a significant margin, while maintaining competitive accuracy.
+            We hope our model will enable various applications
+            that require high-resolution depth, such as video editing, and
+            online decision-making, such as robotics. 
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Method -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Method</h2>
+
+        <p>
+          Our method consists of two main components: (1) a temporal module that enforces consistency across the video sequence, implemented using Mamba, and 
+          (2) a hybrid setup that combines the speed of a smaller model with the accuracy of a larger model. See our paper and code for details. 
+        </p>
+        
+
+        <br/>
+        <h3 class="title is-4">Enforcing Temporal Consistency</h3>
+        <div class="content has-text-justified">
+          <p>
+            Given input frames (Frame T, T+1), a lightweight Mamba model aligns their features to the same scale for temporal consistency. 
+            The other components (ViT encoder, DPT decoder) are based on Depth Anything V2 and process each frame independently.
+          </p>
+          <div style="text-align: center;">
+            <img src="./static/images/arch1.png" width="500px"/>
+          </div>
+        </div>
+       
+        <br/>
+        <h3 class="title is-4">Hybrid Model for Efficiency at High-Resolution</h3>
+        <div class="content has-text-justified">
+          <p>
+            A smaller model (Depth Anything V2 Small) ensures real-time inference at 2K resolution, while a larger model (Depth Anything V2 Large) provides accurate and robust features at lower resolution.
+          </p>
+          <div style="text-align: center;">
+            <img src="./static/images/arch2.png" width="600px"/>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+      <h2 class="title is-3">Qualitative Comparisons</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item">
+          <video poster="" id="dog2" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/dog2/dog2_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        
+        <div class="item">
+          <video poster="" id="garage" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/garage/garage_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        
+        
+        <div class="item">
+          <video poster="" id="dog" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/dog/dog_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+        <div class="item">
+          <video poster="" id="birthday" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/birthday/birthday_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+        <div class="item">
+          <video poster="" id="pool" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/pool/pool_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+        <div class="item">
+          <video poster="" id="street" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/street/street_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+        <div class="item">
+          <video poster="" id="horse" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/horse/horse_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+        <div class="item">
+          <video poster="" id="bike" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/bike/bike_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+
+        
+
+        <div class="item">
+          <video poster="" id="skate" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/grids/skate/skate_comparison_grid.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+
+      
+
+    </div>
+    <!-- style="font-size: 1rem;" -->
+    <h2 class="subtitle"> 
+      (Videos are downsampled for faster loading.) <div style="height: 0.5em;"></div>
+      DepthCrafter is the most consistent method on in-the-wild videos, but it runs at 2.1 FPS at 1024×576 resolution and requires optimizing 110 images at once. <div style="height: 0.5em;"></div>
+      CUT3R supports streaming inputs but only at 14 FPS with resolution 512×288, and produces blurry depth. <div style="height: 0.5em;"></div>
+      In contrast, FlashDepth achieves 24 FPS at 2K resolution while remaining competitive with offline methods.
+
+    </h2>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Quantitative Comparisons</h2>
+
+          <div class="content has-text-justified">
+            <p>
+              FlashDepth achieves competitive accuracies and long-range temporal consistency compared to offline methods
+              while running faster at higher resolution. See paper for more details.
+            </p>
+          </div>
+
+          <!-- First row with single image -->
+          <div class="columns is-centered">
+            <!-- <div class="column is-two-thirds"> -->
+              <figure class="image">
+                <img src="./static/images/acc.png" alt="Quantitative Result 1">
+                <figcaption class="has-text-centered mt-2">Absolute relative error and accuracy</figcaption>
+              </figure>
+            <!-- </div> -->
+          </div>
+
+          <!-- Second row with two images -->
+          <div class="columns is-centered">
+            <div class="column is-half">
+              <figure class="image">
+                <img src="./static/images/f1.png" alt="Quantitative Result 2">
+                <figcaption class="has-text-centered mt-2">Boundary sharpness and FPS / resolution</figcaption>
+              </figure>
+            </div>
+            <div class="column is-half">
+              <figure class="image">
+                <img src="./static/images/temp.png" alt="Quantitative Result 3">
+                <figcaption class="has-text-centered mt-2">Temporal consistency on Waymo test sets</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+      <h2 class="title is-3">Applications</h2>
+
+
+      <h3 class="title is-4">On-Set Live Previews</h3>
+        <!-- <div class="content has-text-justified"> -->
+          
+          <video poster="" id="stage" autoplay controls muted loop playsinline height="90%">
+            <source src="./static/videos/flashdepth_stage.mp4"
+                    type="video/mp4">
+          </video>
+    
+          <h4 class="subtitle" style="font-size: 1rem;">
+            FlashDepth has been integrated into Eyeline Studio’s production stages to support live video effects. 
+            In this example, it segments the actors, chairs, and set pieces to compose the background in near-real-time. 
+            This allows filmmakers to preview how actors fit within the virtual scene without relying on post-production, and makes it easier to get the shot right.
+            <div style="height: 0.5em;"></div>
+            Left screen: Two actors in front of LED screens that can change in brightness and intensity based on position
+            and depth of the subjects, for special effects such as <a href="https://vgl.ict.usc.edu/Research/SpatialRelighting/">relighting</a>.  
+            <div style="height: 0.5em;"></div>
+            
+            Right screen: Real-time depth estimation. Effects in order shown: 
+            1) depth estimation; 
+            2) depth slicing (colorization) to carve depth ranges of the set 
+            (specifically, we interactively adjust the depth threshold to highlight the actors and props in the same (green) range);
+            3) segmentation based on the depth threshold.
+          </h4>
+        
+        
+        <!-- </div> -->
+
+      <br>
+      <h3 class="title is-4">Depth-based Visual Effects</h3>
+        <!-- <div class="content has-text-justified"> -->
+          <div id="results-carousel" class="carousel results-carousel">
+            <div class="item item-composition">
+              <video poster="" id="composition" autoplay controls muted loop playsinline height="100%">
+                <source src="./static/vfx/composition.mp4"
+                        type="video/mp4">
+              </video>
+            </div>
+            <div class="item item-unprojection">
+              <video poster="" id="unprojection" autoplay controls muted loop playsinline height="100%">
+                <source src="./static/vfx/unprojection.mp4"
+                        type="video/mp4">
+              </video>
+            </div>
+            <div class="item item-relight">
+              <video poster="" id="relight" autoplay controls muted loop playsinline height="100%">
+                <source src="./static/vfx/relight.mp4"
+                        type="video/mp4">
+              </video>
+            </div>
+          </div>
+    
+          <h2 class="subtitle" style="font-size: 1rem;">
+            FlashDepth is sufficiently accurate to enable multiple visual effects, such as 
+            depth-based composition, unprojection (novel view synthesis), and relighting. 
+          </h2>
+    
+        <!-- </div> -->
+        
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Limitations and Future Work</h2>
+
+          <div class="content has-text-justified">
+            <p>
+              While FlashDepth achieves competitive quantitative results, we observe noticeable flickering when testing on in-the-wild videos, 
+              especially when compared to diffusion based methods like DepthCrafter. 
+              These artifacts likely stem from lighting fluctuations such as small specks or minor pixel-level changes from outdoor filming. 
+              We believe more diverse training data will improve temporal stability. 
+              
+              Additionally, we did not extensively tune Mamba, which was primarily designed for language-based tasks. 
+              Further tuning may yield better results.
+            </p>
+          </div>
+        </div>
+      </div>
+
+  </div>
+</section>
+
+
+<!-- <section class="section">
+  <div class="container is-max-desktop">
+  </div>
+</section> -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Acknowledgements</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            Gene Chou was supported by an NSF graduate fellowship
+            (2139899). We thank Chi-Chih Chang for discussions on
+            Mamba and efficiency; Jennifer Lao, Tarik Thompson, and Daniel Heckenberg for their operational support; 
+            Nhat Phong Tran, Miles Lauridsen, Oliver Hermann, Oliver Walter, and David Shorey for helping integrate FlashDepth into Eyeline's internal VFX pipeline.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">References</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            Our code was modified and heavily borrowed from the following projects:
+          </p>
+          <p>
+            <a href="https://depth-anything-v2.github.io/">Depth Anything V2</a>: Our base models for training. <br>
+            <a href="https://github.com/state-spaces/mamba">Mamba 2</a>: Our module for temporal consistency.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@misc{chou2025flashdepth,
+  author    = {Chou, Gene and Xian, Wenqi and Yang, Guandao and Abdelfattah, Mohamed and Hariharan, Bharath and Snavely, Noah and Yu, Ning and Debevec, Paul},
+  title     = {FlashDepth: Real-time Streaming Video Depth Estimation at 2K Resolution},
+  booktitle = {arXiv preprint arXiv:2504.07093},
+  url       = {https://arxiv.org/abs/2504.07093},
+  year      = {2025},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="https://arxiv.org/abs/2504.07093">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/Eyeline-Research/FlashDepth" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Website template borrowed from <a href="https://github.com/keunhong/nerfies">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
